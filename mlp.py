@@ -19,7 +19,7 @@ import mnist_loader as loader
 import activation as act
 
 
-DATA_PATH = './MNIST'
+DATA_PATH = '../MNIST'
 
 def get_args():
     parser = argparse.ArgumentParser()
