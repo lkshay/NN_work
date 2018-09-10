@@ -72,8 +72,8 @@ def backprop(x, y, biases, weights, cost, num_layers):
     for i in range(len(delta)):
         d[i] = delta[i]
 
-    print((np.gradient(d)).shape)
-    print((np.gradient(d) * h2 * (1 - h2)).shape)
+    #print((np.gradient(d)).shape)
+    #print((np.gradient(d) * h2 * (1 - h2)).shape)
     
     
     nabla_w_dummy2 = np.zeros((w2.shape[1],1))
@@ -82,11 +82,11 @@ def backprop(x, y, biases, weights, cost, num_layers):
         nabla_w_dummy2[i] = d[i]*h2[i]*(1 - h2[i])
     
     #print(nabla_w_dummy2)
-    grad2 = np.dot(nabla_w_dummy2,np.transpose(h1))
+    grad2_w = np.dot(nabla_w_dummy2,np.transpose(h1))
     
-    grad2 = np.transpose(grad2)
-    print(grad2)
-    print(grad2.shape)
+    grad2_w = np.transpose(grad2_w)
+    #print(grad2)
+    #print(grad2.shape)
 
     nabla_w_dummy1 = np.zeros((w1.shape[1],1))
 
@@ -94,12 +94,32 @@ def backprop(x, y, biases, weights, cost, num_layers):
         nabla_w_dummy1[i] = h1[i]*(1 - h1[i])
 
     #print(x)
-    
     #print(nabla_w_dummy2)
-    grad1 = np.dot(nabla_w_dummy1,np.transpose(x))
-    grad1 = np.transpose(grad1)
+    grad1_w = np.dot(nabla_w_dummy1,np.transpose(x))
+    grad1_w = np.transpose(grad1_w)
     #print(grad1)
     #print(grad1.shape)
+
+    #now calculate with respect to biases, which are equal to nabla_w_dummy1 & nabla_w_dummy2
+
+    grad2_b = nabla_w_dummy2
+    grad1_b = nabla_w_dummy1
+
+    nabla_b[0] = grad1_b
+    nabla_b[1] = grad2_b
+
+    
+    for i in range(w1.shape[1]):
+        for j in range(w1.shape[0]):
+            nabla_w[0][i][j] = grad1_w[j,i]
+    
+    for i in range(w2.shape[1]):
+        for j in range(w2.shape[0]):
+            nabla_w[1][i][j] = grad2_w[j,i]
+
+
+
+
     
     
 
