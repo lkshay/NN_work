@@ -68,7 +68,43 @@ def backprop(x, y, biases, weights, cost, num_layers):
 
     #delta = (cost).delta(activations[-1], y)
     delta = (cost).delta(h2, y)
-    #print(delta)
+    d = np.zeros((len(delta)))
+    for i in range(len(delta)):
+        d[i] = delta[i]
+
+    print((np.gradient(d)).shape)
+    print((np.gradient(d) * h2 * (1 - h2)).shape)
+    
+    
+    nabla_w_dummy2 = np.zeros((w2.shape[1],1))
+
+    for i in range(len(d)):
+        nabla_w_dummy2[i] = d[i]*h2[i]*(1 - h2[i])
+    
+    #print(nabla_w_dummy2)
+    grad2 = np.dot(nabla_w_dummy2,np.transpose(h1))
+    
+    grad2 = np.transpose(grad2)
+    print(grad2)
+    print(grad2.shape)
+
+    nabla_w_dummy1 = np.zeros((w1.shape[1],1))
+
+    for i in range(len(h1)):
+        nabla_w_dummy1[i] = h1[i]*(1 - h1[i])
+
+    #print(x)
+    
+    #print(nabla_w_dummy2)
+    grad1 = np.dot(nabla_w_dummy1,np.transpose(x))
+    grad1 = np.transpose(grad1)
+    #print(grad1)
+    #print(grad1.shape)
+    
+    
+
+
+
 
     ### Implement here
     # backward pass

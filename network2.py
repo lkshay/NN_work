@@ -231,6 +231,7 @@ class Network(object):
     
     def backprop(self, x, y):
         delta_nabla_b, delta_nabla_w = bp.backprop(x, y, self.biases, self.weights, self.cost, self.num_layers)
+        
         return (delta_nabla_b, delta_nabla_w)
 
     def accuracy(self, data, convert=False):
