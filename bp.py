@@ -3,133 +3,75 @@
 # File: bp.py
 
 import numpy as np
-#from src.activation import sigmoid, sigmoid_prime
 from activation import sigmoid, sigmoid_prime
 
 def backprop(x, y, biases, weights, cost, num_layers):
-    """ function of backpropagation
-        Return a tuple ``(nabla_b, nabla_w)`` representing the
-        gradient of all biases and weights.
-        Args:
-            x, y: input image x and label y
-            biases, weights (list): list of biases and weights of entire network
-            cost (CrossEntropyCost): object of cost computation
-            num_layers (int): number of layers of the network
-        Returns:
-            (nabla_b, nabla_w): tuple containing the gradient for all the biases
-                and weights. nabla_b and nabla_w should be the same shape as 
-                input biases and weights
-    """
-    # initial zero list for store gradient of biases and weights
-    nabla_b = [np.zeros(b.shape) for b in biases]
-    nabla_w = [np.zeros(w.shape) for w in weights]
+	""" function of backpropagation
+	Return a tuple ``(nabla_b, nabla_w)`` representing the
+	gradient of all biases and weights.
 
-    ### Implement here
+	Args:
+	x, y: input image x and label y
+	biases, weights (list): list of biases and weights of entire network
+	cost (CrossEntropyCost): object of cost computation
+	num_layers (int): number of layers of the network
 
-    #Set up the weights and biases for the network
-    w1 = np.zeros((len(weights[0][0]),len(weights[0])))
-    print(w1.shape)
-    b1 = np.zeros((len(biases[0]),1))
-    print(b1.shape)
-    w2 = np.zeros((len(weights[1][0]),len(weights[1])))
-    print(w2.shape)
-    b2 = np.zeros((len(biases[1]),1))
-    print(b2.shape)
+	Returns:
+	(nabla_b, nabla_w): tuple containing the gradient for all the biases
+	and weights. nabla_b and nabla_w should be the same shape as 
+	input biases and weights
+	"""
+	# initial zero list for store gradient of biases and weights
+	nabla_b = [np.zeros(b.shape) for b in biases]
+	nabla_w = [np.zeros(w.shape) for w in weights]
 
-    # Implement feedforward pass
-    # Here you need to store all the activations of all the units
-    # by feedforward pass
-    
-    
-    for i in range(w1.shape[1]):
-        for j in range(w1.shape[0]):
-            w1[j,i] = weights[0][i][j]
-    
-    for i in range(w2.shape[1]):
-        for j in range(w2.shape[0]):
-            w2[j,i] = weights[1][i][j]
+	#print(x.shape)
+	#print(weights[0].shape)
+	#print(biases[0].shape)
 
-    for i in range(b1.shape[0]):
-        b1[i] = biases[0][i]
+	### Implement here
+	# feedforward
+	# Here you need to store all the activations of all the units
+	# by feedforward pass
+	###
 
-    for i in range(b2.shape[0]):
-        b2[i] = biases[1][i]
-    
-    h1 = sigmoid(np.dot(np.transpose(w1),x) + b1)
-    h2 = sigmoid(np.dot(np.transpose(w2),h1) + b2)
+	h1 = sigmoid(np.dot(weights[0],x) + biases[0])
+	h2 = sigmoid(np.dot(weights[1],h1) + biases[1])
 
-    #activations[-1] = h2
+	# compute the gradient of error respect to output
+	# activations[-1] is the list of activations of the output layer
+	delta = (cost).delta(h2, y)
 
-    #print(w1)
-    #print(weights[0][0][783])
+	### Implement here
+	# backward pass
+	# Here you need to implement the backward pass to compute the
+	# gradient for each weight and bias
+	###
 
-    # compute the gradient of error respect to output
-    # activations[-1] is the list of activations of the output layer    
+	nabla_b[1] = delta*sigmoid_prime(h2)
+	nabla_w[1] = np.dot(nabla_b[1],h1.transpose())
 
-    #delta = (cost).delta(activations[-1], y)
-    delta = (cost).delta(h2, y)
-    d = np.zeros((len(delta)))
-    for i in range(len(delta)):
-        d[i] = delta[i]
+	nabla_b[0] = np.dot(weights[1].transpose(),nabla_b[1])*sigmoid_prime(h1)	
+	nabla_w[0] = np.dot(nabla_b[0],x.transpose())
+	#nabla_b[0] = sigmoid_prime(h1)
 
-    #print((np.gradient(d)).shape)
-    #print((np.gradient(d) * h2 * (1 - h2)).shape)
-    
-    
-    nabla_w_dummy2 = np.zeros((w2.shape[1],1))
 
-    for i in range(len(d)):
-        nabla_w_dummy2[i] = d[i]*h2[i]*(1 - h2[i])
-    
-    #print(nabla_w_dummy2)
-    grad2_w = np.dot(nabla_w_dummy2,np.transpose(h1))
-    
-    grad2_w = np.transpose(grad2_w)
-    #print(grad2)
-    #print(grad2.shape)
+	#print(weights[1].shape)
+	#print(nabla_w[0].shape)
+	#print(nabla_w[1].shape)	
 
-    nabla_w_dummy1 = np.zeros((w1.shape[1],1))
+	#print(np.dot(nabla_b[1],h1.transpose()).shape)
+	#print(np.dot(nabla_b[0],x.transpose()).shape)
+	 
+	
 
-    for i in range(len(h1)):
-        nabla_w_dummy1[i] = h1[i]*(1 - h1[i])
 
-    #print(x)
-    #print(nabla_w_dummy2)
-    grad1_w = np.dot(nabla_w_dummy1,np.transpose(x))
-    grad1_w = np.transpose(grad1_w)
-    #print(grad1)
-    #print(grad1.shape)
-
-    #now calculate with respect to biases, which are equal to nabla_w_dummy1 & nabla_w_dummy2
-
-    grad2_b = nabla_w_dummy2
-    grad1_b = nabla_w_dummy1
-
-    nabla_b[0] = grad1_b
-    nabla_b[1] = grad2_b
-
-    
-    for i in range(w1.shape[1]):
-        for j in range(w1.shape[0]):
-            nabla_w[0][i][j] = grad1_w[j,i]
-    
-    for i in range(w2.shape[1]):
-        for j in range(w2.shape[0]):
-            nabla_w[1][i][j] = grad2_w[j,i]
+	return (nabla_b, nabla_w)
 
 
 
 
-    
-    
 
 
 
 
-    ### Implement here
-    # backward pass
-    # Here you need to implement the backward pass to compute the
-    # gradient for each weight and bias
-    ###
-
-    return (nabla_b, nabla_w)
