@@ -25,6 +25,8 @@ def backprop(x, y, biases, weights, cost, num_layers):
 	nabla_b = [np.zeros(b.shape) for b in biases]
 	nabla_w = [np.zeros(w.shape) for w in weights]
 
+	#print(num_layers)
+
 	#print(x.shape)
 	#print(weights[0].shape)
 	#print(biases[0].shape)
@@ -35,12 +37,20 @@ def backprop(x, y, biases, weights, cost, num_layers):
 	# by feedforward pass
 	###
 
-	h1 = sigmoid(np.dot(weights[0],x) + biases[0])
-	h2 = sigmoid(np.dot(weights[1],h1) + biases[1])
+	h = []
+	h.append(x)
+
+	for i in range((num_layers-1)):
+		a = sigmoid(np.dot(weights[i],h[i]) + biases[i])
+		h.append(a)
+
+	#h1 = sigmoid(np.dot(weights[0],x) + biases[0])
+	#h2 = sigmoid(np.dot(weights[1],h1) + biases[1])
 
 	# compute the gradient of error respect to output
 	# activations[-1] is the list of activations of the output layer
-	delta = (cost).delta(h2, y)
+
+	delta = (cost).delta(h[-1], y)
 
 	### Implement here
 	# backward pass
@@ -48,11 +58,16 @@ def backprop(x, y, biases, weights, cost, num_layers):
 	# gradient for each weight and bias
 	###
 
-	nabla_b[1] = delta*sigmoid_prime(h2)
-	nabla_w[1] = np.dot(nabla_b[1],h1.transpose())
+	nabla_b[-1] = delta*sigmoid_prime(h[-1])
+	nabla_w[-1] = np.dot(nabla_b[-1],h[-2].transpose())
 
-	nabla_b[0] = np.dot(weights[1].transpose(),nabla_b[1])*sigmoid_prime(h1)	
-	nabla_w[0] = np.dot(nabla_b[0],x.transpose())
+	
+	for i in range(num_layers-3,-1,-1):
+		nabla_b[i] = np.dot(weights[i+1].transpose(),nabla_b[i+1])*sigmoid_prime(h[i+1])	
+		nabla_w[i] = np.dot(nabla_b[i],h[i].transpose())
+	
+	#nabla_b[0] = np.dot(weights[1].transpose(),nabla_b[1])*sigmoid_prime(h[1])	
+	#nabla_w[0] = np.dot(nabla_b[0],h[0].transpose())
 	#nabla_b[0] = sigmoid_prime(h1)
 
 
@@ -64,7 +79,6 @@ def backprop(x, y, biases, weights, cost, num_layers):
 	#print(np.dot(nabla_b[0],x.transpose()).shape)
 	 
 	
-
 
 	return (nabla_b, nabla_w)
 
