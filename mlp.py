@@ -63,14 +63,18 @@ def gradient_check():
     model.gradient_check(training_data=train_data, layer_id=1, unit_id=5, weight_id=3)
 
 def main():
+    epochs = 100
     # load train_data, valid_data, test_data
     train_data, valid_data, test_data = load_data()
     # construct the network
     model = network2.Network([784, 20, 10])
+    
+    #model = load("mymodel.json")
     # train the network using SGD
-    model.SGD(
+
+    [evaluation_cost, evaluation_accuracy,training_cost, training_accuracy] = model.SGD(
         training_data=train_data,
-        epochs=100,
+        epochs=epochs,
         mini_batch_size=128,
         eta=1e-3,
         lmbda = 0.0,
@@ -79,6 +83,26 @@ def main():
         monitor_evaluation_accuracy=True,
         monitor_training_cost=True,
         monitor_training_accuracy=True)
+
+    model.save("mymodel.json")
+    epoch_list = []
+    for i in range(epochs):
+        epoch_list.append(i)
+    
+    # print((epoch_list),(training_cost))
+    plt.figure()    
+    plt.plot(epoch_list,training_cost,"ro")
+    plt.ylabel("training_cost")
+    plt.figure()
+    plt.plot(epoch_list,training_accuracy,"ro")
+    plt.ylabel("training_accuracy")
+    plt.figure()
+    plt.plot(epoch_list,evaluation_cost,"bo")
+    plt.ylabel("evaluation_cost")
+    plt.figure()
+    plt.plot(epoch_list,evaluation_accuracy,"bo")
+    plt.ylabel("evaluation_accuracy")
+    plt.show()
 
 if __name__ == '__main__':
     FLAGS = get_args()
