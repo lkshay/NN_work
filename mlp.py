@@ -63,7 +63,7 @@ def gradient_check():
     model.gradient_check(training_data=train_data, layer_id=1, unit_id=5, weight_id=3)
 
 def main():
-    epochs = 100
+    epochs = 80
     # load train_data, valid_data, test_data
     train_data, valid_data, test_data = load_data()
     # construct the network
@@ -77,7 +77,7 @@ def main():
         epochs=epochs,
         mini_batch_size=128,
         eta=1e-3,
-        lmbda = 0.0,
+        lmbda = 0.001,
         evaluation_data=valid_data,
         monitor_evaluation_cost=True,
         monitor_evaluation_accuracy=True,
@@ -88,20 +88,24 @@ def main():
     epoch_list = []
     for i in range(epochs):
         epoch_list.append(i)
-    
+
     # print((epoch_list),(training_cost))
     plt.figure()    
     plt.plot(epoch_list,training_cost,"ro")
     plt.ylabel("training_cost")
+    plt.xlabel("epochs-->")
     plt.figure()
     plt.plot(epoch_list,training_accuracy,"ro")
     plt.ylabel("training_accuracy")
+    plt.xlabel("epochs-->")
     plt.figure()
     plt.plot(epoch_list,evaluation_cost,"bo")
     plt.ylabel("evaluation_cost")
+    plt.xlabel("epochs-->")
     plt.figure()
     plt.plot(epoch_list,evaluation_accuracy,"bo")
     plt.ylabel("evaluation_accuracy")
+    plt.xlabel("epochs-->")
     plt.show()
 
 if __name__ == '__main__':
