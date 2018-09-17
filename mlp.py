@@ -7,6 +7,7 @@ import sys
 import argparse
 import numpy as np
 import matplotlib.pyplot as plt
+from time import sleep
 '''
 sys.path.append('../')
 import src.network2 as network2
@@ -63,19 +64,19 @@ def gradient_check():
     model.gradient_check(training_data=train_data, layer_id=1, unit_id=5, weight_id=3)
 
 def main():
-    epochs = 80
+    epochs = 125
     # load train_data, valid_data, test_data
     train_data, valid_data, test_data = load_data()
     # construct the network
+    
     model = network2.Network([784, 20, 10])
     
-    #model = load("mymodel.json")
-    # train the network using SGD
+    #train the network using SGD
 
     [evaluation_cost, evaluation_accuracy,training_cost, training_accuracy] = model.SGD(
         training_data=train_data,
         epochs=epochs,
-        mini_batch_size=128,
+        mini_batch_size=200,
         eta=1e-3,
         lmbda = 0.001,
         evaluation_data=valid_data,
@@ -84,28 +85,37 @@ def main():
         monitor_training_cost=True,
         monitor_training_accuracy=True)
 
-    model.save("mymodel.json")
     epoch_list = []
+
     for i in range(epochs):
         epoch_list.append(i)
 
     # print((epoch_list),(training_cost))
     plt.figure()    
     plt.plot(epoch_list,training_cost,"ro")
-    plt.ylabel("training_cost")
+    plt.ylabel("Training Cost")
     plt.xlabel("epochs-->")
     plt.figure()
     plt.plot(epoch_list,training_accuracy,"ro")
-    plt.ylabel("training_accuracy")
+    plt.ylabel("Training Accuracy")
     plt.xlabel("epochs-->")
     plt.figure()
     plt.plot(epoch_list,evaluation_cost,"bo")
-    plt.ylabel("evaluation_cost")
+    plt.ylabel("Evaluation Cost")
     plt.xlabel("epochs-->")
     plt.figure()
     plt.plot(epoch_list,evaluation_accuracy,"bo")
-    plt.ylabel("evaluation_accuracy")
+    plt.ylabel("Evaluation Accuracy")
     plt.xlabel("epochs-->")
+    
+    model.save("mymodel.json")
+    
+    sleep(2)
+    
+    trained_model = network2.load("mymodel.json")
+    test_result = trained_model.accuracy(test_data,convert = False)
+    print test_result
+
     plt.show()
 
 if __name__ == '__main__':
