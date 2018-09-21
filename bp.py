@@ -66,6 +66,11 @@ def backprop(x, y, biases, weights, cost, num_layers):
 		nabla_b[i] = np.dot(weights[i+1].transpose(),nabla_b[i+1])*sigmoid_prime(h[i+1])	
 		nabla_w[i] = np.dot(nabla_b[i],h[i].transpose())
 	
+	# for i in range(0,num_layers-1):
+	# 	nabla_b[-2-i] = np.dot(weights[-2-i+1].transpose(),nabla_b[-2-i+1])*sigmoid_prime(h[-2-i+1])	
+	# 	nabla_w[-2-i] = np.dot(nabla_b[-2-i],h[-2-i].transpose())
+	
+
 	#nabla_b[0] = np.dot(weights[1].transpose(),nabla_b[1])*sigmoid_prime(h[1])	
 	#nabla_w[0] = np.dot(nabla_b[0],h[0].transpose())
 	#nabla_b[0] = sigmoid_prime(h1)

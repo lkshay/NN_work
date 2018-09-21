@@ -60,26 +60,26 @@ def test_sigmoid():
 
 def gradient_check():
     train_data, valid_data, test_data = load_data()
-    model = network2.Network([784, 20, 10])
+    model = network2.Network([784, 50, 10])
     model.gradient_check(training_data=train_data, layer_id=1, unit_id=5, weight_id=3)
 
 def main():
-    epochs = 125
+    epochs = 100
     # load train_data, valid_data, test_data
     train_data, valid_data, test_data = load_data()
     # construct the network
     
-    model = network2.Network([784, 20, 10])
-    
+    # model = network2.Network([784, 60, 10])
+    model = network2.load("mymodel2.json")
     #train the network using SGD
 
     [evaluation_cost, evaluation_accuracy,training_cost, training_accuracy] = model.SGD(
         training_data=train_data,
         epochs=epochs,
-        mini_batch_size=200,
-        eta=1e-3,
-        lmbda = 0.001,
-        evaluation_data=valid_data,
+        mini_batch_size=500,
+        eta=1.9e-3,
+        lmbda = 0.00001,
+        evaluation_data=test_data,
         monitor_evaluation_cost=True,
         monitor_evaluation_accuracy=True,
         monitor_training_cost=True,
@@ -92,29 +92,29 @@ def main():
 
     # print((epoch_list),(training_cost))
     plt.figure()    
-    plt.plot(epoch_list,training_cost,"ro")
+    plt.plot(epoch_list,training_cost,"r-")
     plt.ylabel("Training Cost")
-    plt.xlabel("epochs-->")
+    plt.xlabel("Epochs")
     plt.figure()
-    plt.plot(epoch_list,training_accuracy,"ro")
+    plt.plot(epoch_list,training_accuracy,"r-")
     plt.ylabel("Training Accuracy")
-    plt.xlabel("epochs-->")
+    plt.xlabel("Epochs")
     plt.figure()
-    plt.plot(epoch_list,evaluation_cost,"bo")
+    plt.plot(epoch_list,evaluation_cost,"b-")
     plt.ylabel("Evaluation Cost")
-    plt.xlabel("epochs-->")
+    plt.xlabel("Epochs")
     plt.figure()
-    plt.plot(epoch_list,evaluation_accuracy,"bo")
+    plt.plot(epoch_list,evaluation_accuracy,"b-")
     plt.ylabel("Evaluation Accuracy")
-    plt.xlabel("epochs-->")
+    plt.xlabel("Epochs")
     
-    model.save("mymodel.json")
+    model.save("mymodel2.json")
     
-    sleep(2)
+    # sleep(2)
     
-    trained_model = network2.load("mymodel.json")
-    test_result = trained_model.accuracy(test_data,convert = False)
-    print test_result
+    # trained_model = network2.load("mymodel.json")
+    # test_result = trained_model.accuracy(test_data,convert = False)
+    # print test_result
 
     plt.show()
 
