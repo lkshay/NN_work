@@ -64,7 +64,7 @@ def gradient_check():
     model.gradient_check(training_data=train_data, layer_id=1, unit_id=5, weight_id=3)
 
 def main():
-    epochs = 100
+    epochs = 1000
     # load train_data, valid_data, test_data
     train_data, valid_data, test_data = load_data()
     # construct the network
